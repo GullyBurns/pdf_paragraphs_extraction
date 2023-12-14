@@ -19,28 +19,28 @@ test:
 	. venv/bin/activate; command cd src; command pytest
 
 remove_docker_containers:
-	docker compose ps -q | xargs docker rm
+	docker-compose ps -q | xargs docker rm
 
 remove_docker_images:
-	docker compose config --images | xargs docker rmi
+	docker-compose config --images | xargs docker rmi
 
 start:
-	docker compose -f local-docker-compose.yml up --attach pdf_paragraphs_extraction_worker --attach pdf_paragraphs_extraction_api --build
+	docker-compose -f local-docker-compose.yml up --attach pdf_paragraphs_extraction_worker --attach pdf_paragraphs_extraction_api --build
 
 start_mac:
-	docker compose -f mac-docker-compose.yml up
+	docker-compose -f mac-docker-compose.yml up
 
 start_local:
-	docker compose -f local-docker-compose.yml up
+	docker-compose -f local-docker-compose.yml up
 
 start_detached:
-	docker compose up --build -d
+	docker-compose up --build -d
 
 start_for_testing:
-	docker compose down; docker compose up --attach pdf_paragraphs_extraction_worker --attach pdf_paragraphs_extraction_api --build
+	docker-compose down; docker compose up --attach pdf_paragraphs_extraction_worker --attach pdf_paragraphs_extraction_api --build
 
 stop:
-	docker compose stop
+	docker-compose stop
 
 delete_queues:
 	. venv/bin/activate; python scripts/delete_queues.py
