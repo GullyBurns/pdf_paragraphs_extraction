@@ -88,9 +88,9 @@ class QueueProcessor:
             try:
                 self.extractions_tasks_queue.getQueueAttributes().exec_command()
                 self.results_queue.getQueueAttributes().exec_command()
-
+        
                 self.logger.info(f"Connecting to redis: {config.REDIS_HOST}:{config.REDIS_PORT}")
-
+        
                 redis_smq_consumer = RedisSMQConsumer(
                     qname=TASK_QUEUE_NAME,
                     processor=self.process,
@@ -98,7 +98,8 @@ class QueueProcessor:
                     port=config.REDIS_PORT,
                 )
                 redis_smq_consumer.run()
-            except redis.exceptions.ConnectionError:
+            except redis.exceptions.ConnectionError as e:
+                self.logger.error(e)
                 self.logger.error(f"Error connecting to redis: {config.REDIS_HOST}:{config.REDIS_PORT}")
                 sleep(20)
             except cmd.exceptions.QueueDoesNotExist:
@@ -106,6 +107,8 @@ class QueueProcessor:
                 self.extractions_tasks_queue.createQueue().vt(120).exceptions(False).execute()
                 self.results_queue.createQueue().exceptions(False).execute()
                 self.logger.info("Queues have been created")
+        
+
 
 
 if __name__ == "__main__":
